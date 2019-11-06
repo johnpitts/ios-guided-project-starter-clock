@@ -72,6 +72,7 @@ class ClockView: UIView {
     private var digitFont: UIFont {
         return UIFont.systemFont(ofSize: 8.0 + frame.size.width / 50.0)
     }
+   
     
     // MARK: - View Lifecycle
     
@@ -92,9 +93,15 @@ class ClockView: UIView {
         if let context = UIGraphicsGetCurrentContext() {
             
             // clock face
+            context.addEllipse(in: rect)              // when we feed it a square, it'll end up a circle
+            context.setFillColor(clockBgColor.cgColor)   // look above: it's UIColor.black
+            context.fillPath()                       // fills shape with same color as border color for shape
             
             // clock's border
-            
+            context.addEllipse(in: CGRect(x: rect.origin.x + borderWidth / 2.0, y: rect.origin.y + borderWidth / 2.0, width: rect.size.width - borderWidth, height: rect.size.height - borderWidth))
+            context.setStrokeColor(borderColor.cgColor)
+            context.setLineWidth(borderWidth)
+            context.strokePath()
             // numerals
 //            let clockCenter = CGPoint(x: rect.size.width / 2.0,
 //                                      y: rect.size.height / 2.0)
