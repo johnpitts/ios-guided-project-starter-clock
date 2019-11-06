@@ -129,10 +129,22 @@ class ClockView: UIView {
             
             // minute hand
             context.setStrokeColor(minutes.color.cgColor)
-            
+            context.move(to: clockCenter)
+            context.setLineWidth(minutes.width)
+            context.addLine(to: minuteHandEndPoint)
+            context.strokePath()
             // hour hand
-            
+            context.setStrokeColor(hours.color.cgColor)
+            context.move(to: clockCenter)
+            context.setLineWidth(hours.width)
+            context.addLine(to: hourHandEndPoint)
+            context.strokePath()
             // hour/minute's center
+            let largeDotRadius: CGFloat = 6.0             //Core Graphics likes CGFloat as type Double
+            let centerCircleRect = CGRect(x: clockCenter.x - largeDotRadius, y: clockCenter.y - largeDotRadius, width: 2 * largeDotRadius, height: 2 * largeDotRadius)
+            context.addEllipse(in: centerCircleRect)
+            context.setFillColor(hours.color.cgColor)
+            context.fillPath()
             
             // second hand
             
