@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 
+
+// Now you have the code to make a clockface anywhere you like by copying this ClockView.swift file to your app.  you can then change colors, or sizes or other minutae/detail
+
 struct Hand {
     let width: CGFloat // in points
     // length is proportionate to size of view, so the higher the number,
@@ -41,7 +44,7 @@ class ClockView: UIView {
     
     private var seconds = Hand(width: 1.0, length: 2.4, color: .red, value: 0)
     private var minutes = Hand(width: 3.0, length: 3.2, color: .white, value: 0)
-    private var hours = Hand(width: 4.0, length: 4.6, color: .white, value: 0)
+    private var hours = Hand(width: 8.0, length: 4.6, color: .white, value: 0)
     
     private var secondHandEndPoint: CGPoint {
         let secondsAsRadians = Float(Double(seconds.value) / 60.0 * 2.0 * Double.pi - Double.pi / 2)
@@ -147,22 +150,34 @@ class ClockView: UIView {
             context.fillPath()
             
             // second hand
-            
+            context.setStrokeColor(seconds.color.cgColor)
+            context.move(to: clockCenter)
+            context.setLineWidth(seconds.width)
+            context.addLine(to: secondHandEndPoint)
+            context.strokePath()
             // second's center
-            
+            let secondHandDotRadius: CGFloat = 4.0             //Core Graphics likes CGFloat as type Double
+            let centerMinuteCircleRect = CGRect(x: clockCenter.x - secondHandDotRadius, y: clockCenter.y - secondHandDotRadius, width: 2 * secondHandDotRadius, height: 2 * secondHandDotRadius)
+            context.addEllipse(in: centerMinuteCircleRect)
+            context.setFillColor(seconds.color.cgColor)
+            context.fillPath()
         }
     }
     
     @objc func timerFired(_ sender: CADisplayLink) {
         // Get current time
-        
+        let currentTime = Date()
         // Get calendar and set timezone
-        
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timezone!
         // Extract hour, minute, second components from current time
-        
+        let timeComponents = calendar.dateComponents([.hour, .minute, .second], from: currentTime)
         // Set above components to hours, minutes, seconds properties
-        
+        hours.value = timeComponents.hour ?? 12
+        minutes.value = timeComponents.minute ?? 0
+        seconds.value = timeComponents.second ?? 0
         // Trigger a screen refresh
+        setNeedsDisplay()                           // similar to tableView.reloadData()
         
     }
     
